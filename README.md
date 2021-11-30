@@ -119,6 +119,10 @@ server.listen(port, url, () => {
 ```
 
 ## cluster
+- cluster 底层就是 child_process
+- 集成了child_process.fork方法创建node子进程的方式
+- 集成了根据多核CPU创建子进程后，自动控制负载均衡的方式
+
 ```js
 import cluster from 'cluster';
 import http from 'http';
