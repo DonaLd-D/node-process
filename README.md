@@ -10,7 +10,7 @@ http.createServer().listen(3000, () => {
 });
 ```
 
-## node单线程执行js
+## node v8单线程执行js
 
 - 线程是操作系统能够进行运算调度的最小单位，首先我们要清楚线程是隶属于进程的，被包含于进程之中。
 - 一个线程只能隶属于一个进程，但是一个进程是可以拥有多个线程的。
@@ -54,7 +54,6 @@ server.listen(port, url, () => {
 - child_process.exec()
 - child_process.execFile()
 - child_process.fork()
-- 
 ```js
 const spawn = require('child_process').spawn;
 const child = spawn('ls', ['-l'], { cwd: '/usr' }) // cwd 指定子进程的工作目录，默认当前目录
@@ -86,7 +85,7 @@ const fork = require('child_process').fork;
 fork('./worker.js'); // fork 一个新的子进程
 ```
 
-## fork创建子线程利用多核cpu
+## fork创建子进程利用多核cpu
 ```js
 const http = require('http');
 const fork = require('child_process').fork;
