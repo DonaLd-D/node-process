@@ -45,3 +45,40 @@ server.listen(port, url, () => {
     console.log(`server started at http://${url}:${port}`);
 });
 ```
+
+## child_process 子进程
+- child_process.spawn()
+- child_process.exec()
+- child_process.execFile()
+- child_process.fork()
+- 
+```js
+const spawn = require('child_process').spawn;
+const child = spawn('ls', ['-l'], { cwd: '/usr' }) // cwd 指定子进程的工作目录，默认当前目录
+
+child.stdout.pipe(process.stdout);
+console.log(process.pid, child.pid); // 主进程id3243 子进程3244
+```
+
+```js
+const exec = require('child_process').exec;
+
+exec(`node -v`, (error, stdout, stderr) => {
+    console.log({ error, stdout, stderr })
+    // { error: null, stdout: 'v8.5.0\n', stderr: '' }
+})
+```
+
+```js
+const execFile = require('child_process').execFile;
+
+execFile(`node`, ['-v'], (error, stdout, stderr) => {
+    console.log({ error, stdout, stderr })
+    // { error: null, stdout: 'v8.5.0\n', stderr: '' }
+})
+```
+
+```js
+const fork = require('child_process').fork;
+fork('./worker.js'); // fork 一个新的子进程
+```
