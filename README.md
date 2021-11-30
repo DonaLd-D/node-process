@@ -117,3 +117,62 @@ server.listen(port, url, () => {
     console.log(`server started at http://${url}:${port}`);
 });
 ```
+
+## cluster
+```js
+import cluster from 'cluster';
+import http from 'http';
+import { cpus } from 'os';
+import process from 'process';
+
+const numCPUs = cpus().length;
+
+if (cluster.isPrimary) {
+  console.log(`Primary ${process.pid} is running`);
+
+  // 衍生工作进程。
+  for (let i = 0; i < numCPUs; i++) {
+    cluster.fork();
+  }
+
+  cluster.on('exit', (worker, code, signal) => {
+    console.log(`worker ${worker.process.pid} died`);
+  });
+} else {
+  // 工作进程可以共享任何 TCP 连接
+  // 在本示例中，其是 HTTP 服务器
+  http.createServer((req, res) => {
+    res.writeHead(200);
+    res.end('hello world\n');
+  }).listen(8000);
+
+  console.log(`Worker ${process.pid} started`);
+}
+```
+
+## worker_threads 工作线程
+```js
+const {
+  Worker, isMainThread, parentPort, workerData
+} = require('worker_threads');
+
+if (isMainThread) {
+  module.exports = function parseJSAsync(script) {
+    return new Promise((resolve, reject) => {
+      const worker = new Worker(__filename, {
+        workerData: script
+      });
+      worker.on('message', resolve);
+      worker.on('error', reject);
+      worker.on('exit', (code) => {
+        if (code !== 0)
+          reject(new Error(`Worker stopped with exit code ${code}`));
+      });
+    });
+  };
+} else {
+  const { parse } = require('some-js-parsing-library');
+  const script = workerData;
+  parentPort.postMessage(parse(script));
+}
+```
